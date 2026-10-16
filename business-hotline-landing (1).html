@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Business Hotline by NativeTalk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@450..700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#ffffff;
+    --bg-soft:#f5f8fd;
+    --bg-soft-2:#eef2fc;
+    --navy-900:#0a1628;
+    --navy-800:#0f2038;
+    --navy-700:#172d4e;
+    --blue:#2f5ff6;
+    --blue-dark:#1c3fc4;
+    --blue-bright:#4f7bff;
+    --blue-light:#e8edff;
+    --blue-lightest:#f2f5ff;
+    --slate-600:#4a5468;
+    --slate-500:#68728a;
+    --slate-400:#96a0b5;
+    --border:#e6e9f2;
+    --border-soft:#eef1f7;
+    --white:#ffffff;
+    --radius-lg:24px;
+    --radius-md:16px;
+    --radius-sm:10px;
+    --shadow-sm: 0 1px 2px rgba(10,22,40,0.04), 0 1px 1px rgba(10,22,40,0.03);
+    --shadow-md: 0 8px 24px rgba(10,22,40,0.07), 0 2px 6px rgba(10,22,40,0.04);
+    --shadow-lg: 0 24px 64px rgba(10,22,40,0.12), 0 8px 24px rgba(10,22,40,0.06);
+    --shadow-blue: 0 12px 32px rgba(47,95,246,0.22);
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+  body{
+    font-family:'Inter', sans-serif;
+    color:var(--navy-900);
+    background:var(--bg);
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important; }
+  }
+
+  h1,h2,h3,h4{
+    font-family:'Instrument Sans', sans-serif;
+    font-weight:600;
+    letter-spacing:-0.02em;
+    color:var(--navy-900);
+    line-height:1.08;
+  }
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+  a{ text-decoration:none; color:inherit; }
+  button{ font-family:inherit; cursor:pointer; border:none; background:none; }
+  img,svg{ display:block; max-width:100%; }
+  ::selection{ background:var(--blue); color:#fff; }
+
+  .wrap{ max-width:1180px; margin:0 auto; padding:0 32px; }
+  section{ position:relative; }
+
+  /* ---------- utility: fade-up reveal ---------- */
+  .reveal{ opacity:0; transform:translateY(24px); transition:opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1); }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+  .reveal-d1{ transition-delay:.08s; }
+  .reveal-d2{ transition-delay:.16s; }
+  .reveal-d3{ transition-delay:.24s; }
+  .reveal-d4{ transition-delay:.32s; }
+
+  /* ---------- eyebrow ---------- */
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:12.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--blue-dark);
+    background:var(--blue-lightest);
+    border:1px solid var(--blue-light);
+    padding:6px 14px 6px 10px;
+    border-radius:100px;
+  }
+  .eyebrow .dot{ width:6px; height:6px; border-radius:50%; background:var(--blue); box-shadow:0 0 0 3px var(--blue-light); }
+
+  /* ---------- buttons ---------- */
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    padding:14px 26px; border-radius:12px; font-weight:600; font-size:15px;
+    transition:transform .25s cubic-bezier(.16,1,.3,1), box-shadow .25s, background .25s, color .25s, border-color .25s;
+    white-space:nowrap;
+  }
+  .btn-primary{ background:var(--navy-900); color:#fff; box-shadow:var(--shadow-sm); }
+  .btn-primary:hover{ background:var(--blue); transform:translateY(-2px); box-shadow:var(--shadow-blue); }
+  .btn-ghost{ background:#fff; color:var(--navy-900); border:1.5px solid var(--border); }
+  .btn-ghost:hover{ border-color:var(--blue); color:var(--blue-dark); transform:translateY(-2px); box-shadow:var(--shadow-md); }
+  .btn-on-dark{ background:var(--blue); color:#fff; box-shadow:0 8px 24px rgba(47,95,246,0.35); }
+  .btn-on-dark:hover{ background:var(--blue-bright); transform:translateY(-2px); }
+  .btn-ghost-dark{ background:rgba(255,255,255,0.06); color:#fff; border:1.5px solid rgba(255,255,255,0.18); }
+  .btn-ghost-dark:hover{ background:rgba(255,255,255,0.12); border-color:rgba(255,255,255,0.35); transform:translateY(-2px); }
+  .btn-sm{ padding:10px 18px; font-size:13.5px; border-radius:10px; }
+
+  /* ============ NAV ============ */
+  header{
+    position:sticky; top:0; z-index:100;
+    background:rgba(255,255,255,0.78);
+    backdrop-filter:blur(16px) saturate(160%);
+    -webkit-backdrop-filter:blur(16px) saturate(160%);
+    border-bottom:1px solid transparent;
+    transition:border-color .3s, box-shadow .3s;
+  }
+  header.scrolled{ border-bottom-color:var(--border); box-shadow:0 1px 0 rgba(10,22,40,0.02), 0 8px 24px rgba(10,22,40,0.04); }
+  nav{ display:flex; align-items:center; justify-content:space-between; padding:16px 32px; max-width:1180px; margin:0 auto; }
+  .logo{ display:flex; align-items:center; gap:10px; font-family:'Instrument Sans',sans-serif; font-weight:650; font-size:18px; }
+  .logo-mark{ width:30px; height:30px; border-radius:9px; background:linear-gradient(135deg,var(--blue),var(--navy-900)); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .logo-mark svg{ width:16px; height:16px; }
+  .logo-tag{ font-family:'Inter',sans-serif; font-weight:500; font-size:12.5px; color:var(--slate-500); border-left:1px solid var(--border); padding-left:10px; margin-left:2px; }
+  .navlinks{ display:flex; align-items:center; gap:36px; }
+  .navlinks a{ font-size:14.5px; font-weight:500; color:var(--slate-600); transition:color .2s; }
+  .navlinks a:hover{ color:var(--navy-900); }
+  .nav-cta{ display:flex; align-items:center; gap:14px; }
+  @media(max-width:900px){ .navlinks{ display:none; } }
+
+  /* ============ HERO ============ */
+  .hero{
+    padding:120px 0 100px;
+    background:
+      radial-gradient(760px 420px at 12% -10%, var(--blue-lightest) 0%, transparent 60%),
+      radial-gradient(900px 500px at 105% 10%, var(--blue-lightest) 0%, transparent 55%),
+      var(--bg);
+    overflow:hidden;
+  }
+  .hero-grid{ display:grid; grid-template-columns:1fr; gap:64px; align-items:center; }
+  .hero-copy{ max-width:640px; }
+  .hero h1{ font-size:clamp(38px,5.4vw,64px); margin:20px 0 22px; }
+  .hero h1 .accent{ color:var(--blue); }
+  .hero-sub{ font-size:18px; line-height:1.6; color:var(--slate-600); max-width:520px; margin-bottom:34px; }
+  .hero-ctas{ display:flex; gap:14px; flex-wrap:wrap; margin-bottom:28px; }
+  .hero-proof{ display:flex; align-items:center; gap:10px; font-size:13.5px; color:var(--slate-500); }
+  .hero-proof .stack{ display:flex; }
+  .hero-proof .stack span{ width:26px; height:26px; border-radius:50%; border:2px solid #fff; margin-left:-8px; background:linear-gradient(135deg,var(--blue-light),var(--blue)); }
+  .hero-proof .stack span:first-child{ margin-left:0; }
+
+  /* --- hero visual --- */
+  .hero-visual{ position:relative; height:560px; }
+  .hv-dashboard{
+    position:absolute; left:0; top:20px; width:78%; max-width:520px;
+    background:#fff; border-radius:20px; border:1px solid var(--border);
+    box-shadow:var(--shadow-lg); overflow:hidden;
+    animation:floatSlow 7s ease-in-out infinite;
+  }
+  .hv-dash-top{ display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid var(--border-soft); }
+  .hv-dash-title{ font-family:'Instrument Sans',sans-serif; font-weight:600; font-size:14.5px; }
+  .hv-dots{ display:flex; gap:6px; }
+  .hv-dots span{ width:8px; height:8px; border-radius:50%; background:var(--border); }
+  .hv-dash-body{ padding:20px; display:flex; flex-direction:column; gap:12px; }
+  .hv-number-pill{
+    display:flex; align-items:center; justify-content:space-between;
+    background:var(--navy-900); color:#fff; border-radius:14px; padding:14px 18px;
+  }
+  .hv-number-pill .num{ font-family:'IBM Plex Mono',monospace; font-size:17px; font-weight:600; letter-spacing:.02em; }
+  .hv-number-pill .live{ display:flex; align-items:center; gap:6px; font-size:11.5px; color:#9fb4ff; }
+  .hv-number-pill .live i{ width:6px; height:6px; border-radius:50%; background:#5cf29a; display:block; box-shadow:0 0 0 3px rgba(92,242,154,0.25); animation:pulse 1.6s infinite; }
+
+  .hv-route-row{ display:flex; gap:10px; }
+  .hv-route-card{ flex:1; background:var(--bg-soft); border:1px solid var(--border-soft); border-radius:12px; padding:11px 12px; }
+  .hv-route-card .lbl{ font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--slate-400); font-weight:600; margin-bottom:4px; }
+  .hv-route-card .val{ font-size:13px; font-weight:600; color:var(--navy-900); }
+
+  .hv-call-line{ display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; background:var(--bg-soft); }
+  .hv-call-line .avatar{ width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg,var(--blue-light),var(--blue)); flex-shrink:0; }
+  .hv-call-line .meta{ flex:1; }
+  .hv-call-line .meta .n1{ font-size:12.5px; font-weight:600; }
+  .hv-call-line .meta .n2{ font-size:11px; color:var(--slate-500); }
+  .hv-call-line .tag{ font-size:10.5px; font-weight:600; color:var(--blue-dark); background:var(--blue-lightest); padding:4px 9px; border-radius:100px; }
+
+  .hv-phone{
+    position:absolute; right:0; bottom:0; width:250px;
+    background:var(--navy-900); border-radius:36px; padding:14px;
+    box-shadow:var(--shadow-lg); border:6px solid var(--navy-900);
+    animation:floatSlow 7s ease-in-out infinite .6s;
+  }
+  .hv-phone-screen{ background:linear-gradient(180deg,#101f38,#0a1628); border-radius:24px; padding:26px 18px; text-align:center; min-height:400px; display:flex; flex-direction:column; align-items:center; }
+  .hv-phone-caller{ margin-top:18px; }
+  .hv-phone-avatar{ width:64px; height:64px; border-radius:50%; margin:0 auto 14px; background:linear-gradient(135deg,var(--blue),#173da0); display:flex; align-items:center; justify-content:center; box-shadow:0 0 0 8px rgba(47,95,246,0.15); }
+  .hv-phone-name{ color:#fff; font-weight:600; font-size:15px; margin-bottom:4px; }
+  .hv-phone-sub{ color:#8fa1c9; font-size:12px; margin-bottom:26px; }
+  .hv-phone-ivr{ background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:12px 14px; width:100%; text-align:left; margin-bottom:8px; }
+  .hv-phone-ivr .t{ color:#fff; font-size:11.5px; font-weight:600; margin-bottom:2px; }
+  .hv-phone-ivr .s{ color:#7d8fb5; font-size:10.5px; }
+  .hv-phone-btns{ margin-top:auto; display:flex; gap:18px; }
+  .hv-phone-btn{ width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+  .hv-phone-btn.accept{ background:#33c979; box-shadow:0 6px 18px rgba(51,201,121,.4); }
+  .hv-phone-btn.decline{ background:#f24957; box-shadow:0 6px 18px rgba(242,73,87,.4); }
+
+  .hv-float{
+    position:absolute; background:#fff; border:1px solid var(--border); border-radius:14px; box-shadow:var(--shadow-md);
+    padding:12px 14px; font-size:12px; animation:floatSlow 6s ease-in-out infinite;
+  }
+  .hv-float.f1{ left:6%; top:0px; animation-delay:.2s; }
+  .hv-float.f1 .t{ font-weight:600; color:var(--navy-900); font-size:12px; }
+  .hv-float.f1 .s{ color:var(--slate-500); font-size:10.5px; margin-top:2px; }
+  .hv-float.f2{ left:0%; bottom:2%; animation-delay:1.1s; display:flex; align-items:center; gap:8px; }
+  .hv-float.f2 .ic{ width:26px; height:26px; border-radius:8px; background:var(--blue-lightest); display:flex; align-items:center; justify-content:center; }
+  .hv-float.f2 svg{ width:14px; height:14px; stroke:var(--blue); }
+
+  @keyframes floatSlow{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-10px);} }
+  @keyframes pulse{ 0%{ box-shadow:0 0 0 0 rgba(92,242,154,.5);} 70%{ box-shadow:0 0 0 8px rgba(92,242,154,0);} 100%{ box-shadow:0 0 0 0 rgba(92,242,154,0);} }
+
+  @media(min-width:960px){ .hero-grid{ grid-template-columns:0.92fr 1fr; } }
+  @media(max-width:640px){ .hero-visual{ height:440px; } .hv-dashboard{ width:88%; } .hv-phone{ width:190px; } .hv-phone-screen{ min-height:320px; padding:18px 14px;} }
+
+  /* ============ SECTION HEADERS ============ */
+  .section-head{ max-width:640px; margin-bottom:52px; }
+  .section-head.center{ margin-left:auto; margin-right:auto; text-align:center; }
+  .section-head h2{ font-size:clamp(30px,3.6vw,42px); margin:16px 0 14px; }
+  .section-head p{ font-size:16.5px; color:var(--slate-600); line-height:1.6; }
+
+  /* ============ NUMBER SELECTION ============ */
+  .numbers-section{ padding:120px 0; background:var(--bg-soft); }
+  .num-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:18px; margin-bottom:20px; }
+  .num-card{
+    position:relative; background:#fff; border:1.5px solid var(--border); border-radius:var(--radius-md);
+    padding:24px 22px; cursor:pointer; transition:transform .3s cubic-bezier(.16,1,.3,1), box-shadow .3s, border-color .3s;
+  }
+  .num-card:hover{ transform:translateY(-4px); box-shadow:var(--shadow-md); border-color:var(--blue-light); }
+  .num-card.selected{ border-color:var(--blue); box-shadow:0 0 0 4px var(--blue-lightest), var(--shadow-blue); transform:translateY(-4px); }
+  .num-card.reserved{ opacity:.55; cursor:not-allowed; }
+  .num-card.reserved:hover{ transform:none; box-shadow:none; border-color:var(--border); }
+  .num-card-top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+  .num-status{ font-size:11px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; padding:4px 10px; border-radius:100px; }
+  .num-status.available{ background:#e9faf1; color:#1a9a5c; }
+  .num-status.reserved-tag{ background:var(--bg-soft-2); color:var(--slate-500); }
+  .num-prefix{ font-size:11px; font-weight:600; color:var(--slate-400); letter-spacing:.04em; }
+  .num-value{ font-family:'IBM Plex Mono',monospace; font-size:24px; font-weight:600; color:var(--navy-900); letter-spacing:.01em; margin-bottom:18px; }
+  .num-select-btn{
+    width:100%; padding:11px; border-radius:10px; font-size:13.5px; font-weight:600;
+    background:var(--navy-900); color:#fff; transition:background .25s, transform .2s;
+    display:flex; align-items:center; justify-content:center; gap:6px;
+  }
+  .num-card:hover .num-select-btn{ background:var(--blue); }
+  .num-card.selected .num-select-btn{ background:var(--blue); }
+  .num-card.reserved .num-select-btn{ background:var(--border); color:var(--slate-400); }
+  .num-select-btn svg{ width:14px; height:14px; opacity:0; transform:scale(.6); transition:all .25s; }
+  .num-card.selected .num-select-btn svg{ opacity:1; transform:scale(1); }
+  .num-card.selected .num-select-btn .lbltext::after{ content:"Reserved"; }
+  .num-card.selected .num-select-btn .lbltext{ font-size:0; }
+  .num-card.selected .num-select-btn .lbltext::after{ font-size:13.5px; }
+
+  .also-avail{ margin-top:56px; }
+  .also-avail-head{ display:flex; align-items:baseline; justify-content:space-between; margin-bottom:18px; }
+  .also-avail-head h3{ font-family:'Instrument Sans',sans-serif; font-size:18px; font-weight:600; }
+  .also-avail-head span{ font-size:13px; color:var(--slate-500); }
+  .num-row-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; }
+  .num-row-card{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    background:#fff; border:1px solid var(--border); border-radius:12px; padding:14px 16px;
+    transition:border-color .25s, transform .25s;
+  }
+  .num-row-card:hover{ border-color:var(--blue-light); transform:translateY(-2px); }
+  .num-row-card .num-value{ font-size:16.5px; margin-bottom:0; }
+  .num-row-card .btn-sm{ flex-shrink:0; }
+
+  /* ============ PROBLEM ============ */
+  .problem-section{ padding:130px 0; }
+  .problem-grid{ display:grid; grid-template-columns:1fr; gap:60px; align-items:center; }
+  .problem-illustration{ position:relative; background:var(--bg-soft); border-radius:28px; padding:44px; border:1px solid var(--border-soft); }
+  .pi-row{ display:flex; align-items:center; gap:14px; margin-bottom:14px; }
+  .pi-row:last-child{ margin-bottom:0; }
+  .pi-card{ flex:1; background:#fff; border:1px solid var(--border); border-radius:14px; padding:14px 16px; display:flex; align-items:center; gap:12px; }
+  .pi-card.missed{ border-color:#fde2e2; background:#fff8f8; }
+  .pi-avatar{ width:34px; height:34px; border-radius:50%; background:var(--bg-soft-2); flex-shrink:0; display:flex; align-items:center; justify-content:center; }
+  .pi-card.missed .pi-avatar{ background:#fde2e2; }
+  .pi-avatar svg{ width:16px; height:16px; stroke:var(--slate-500); }
+  .pi-card.missed .pi-avatar svg{ stroke:#e4544f; }
+  .pi-meta .n1{ font-size:13px; font-weight:600; }
+  .pi-meta .n2{ font-size:11px; color:var(--slate-500); }
+  .pi-card.missed .n2{ color:#e4544f; }
+  .pi-arrow{ display:flex; align-items:center; justify-content:center; width:26px; }
+  .pi-arrow svg{ width:18px; height:18px; stroke:var(--slate-400); }
+  .pi-divider{ display:flex; align-items:center; gap:14px; margin:26px 0; }
+  .pi-divider .line{ flex:1; height:1px; background:var(--border); }
+  .pi-divider span{ font-size:11.5px; font-weight:600; color:var(--slate-400); letter-spacing:.05em; text-transform:uppercase; }
+  .pi-solved{ background:var(--navy-900); border-radius:16px; padding:16px 18px; display:flex; align-items:center; gap:14px; }
+  .pi-solved .pi-avatar{ background:rgba(255,255,255,0.1); }
+  .pi-solved .pi-avatar svg{ stroke:#5cf29a; }
+  .pi-solved .n1{ color:#fff; }
+  .pi-solved .n2{ color:#5cf29a; }
+
+  .problem-copy .stat-row{ display:flex; gap:36px; margin-top:36px; padding-top:32px; border-top:1px solid var(--border); }
+  .stat-item .num{ font-family:'Instrument Sans',sans-serif; font-size:34px; font-weight:650; color:var(--blue); }
+  .stat-item .lbl{ font-size:13px; color:var(--slate-500); margin-top:4px; max-width:150px; }
+
+  @media(min-width:960px){ .problem-grid{ grid-template-columns:1fr 1fr; } }
+
+  /* ============ FEATURES ============ */
+  .features-section{ padding:130px 0; background:var(--bg-soft); }
+  .feature-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; }
+  .feature-card{
+    background:#fff; border:1px solid var(--border); border-radius:var(--radius-md);
+    padding:26px 24px; transition:transform .3s cubic-bezier(.16,1,.3,1), box-shadow .3s, border-color .3s;
+  }
+  .feature-card:hover{ transform:translateY(-4px); box-shadow:var(--shadow-md); border-color:var(--blue-light); }
+  .feature-icon{ width:42px; height:42px; border-radius:12px; background:var(--blue-lightest); display:flex; align-items:center; justify-content:center; margin-bottom:18px; }
+  .feature-icon svg{ width:20px; height:20px; stroke:var(--blue-dark); }
+  .feature-card h4{ font-size:16px; font-weight:600; margin-bottom:6px; }
+  .feature-card p{ font-size:13.5px; color:var(--slate-500); line-height:1.55; }
+
+  /* ============ CALL FLOW DIAGRAM ============ */
+  .flow-section{ padding:140px 0; background:radial-gradient(1100px 600px at 50% 0%, #101f38 0%, var(--navy-900) 55%, var(--navy-900) 100%); color:#fff; overflow:hidden; }
+  .flow-section .section-head h2{ color:#fff; }
+  .flow-section .section-head p{ color:#93a1c2; }
+  .flow-section .eyebrow{ background:rgba(255,255,255,0.06); border-color:rgba(255,255,255,0.12); color:#a9bbff; }
+  .flow-section .eyebrow .dot{ background:var(--blue-bright); box-shadow:0 0 0 3px rgba(79,123,255,0.25); }
+
+  .flow-diagram{ position:relative; max-width:900px; margin:0 auto; padding:40px 0; }
+  .flow-svg{ width:100%; height:auto; overflow:visible; }
+  .flow-node{ fill:#101f38; stroke:rgba(255,255,255,0.14); stroke-width:1.4; }
+  .flow-node-label{ font-family:'Inter',sans-serif; fill:#fff; font-size:12px; font-weight:600; }
+  .flow-node-sub{ font-family:'Inter',sans-serif; fill:#8fa1c9; font-size:9.5px; }
+  .flow-line{ fill:none; stroke:rgba(79,123,255,0.35); stroke-width:1.5; }
+  .flow-pulse{ fill:none; stroke:#4f7bff; stroke-width:2; stroke-linecap:round; stroke-dasharray:8 220; filter:drop-shadow(0 0 6px rgba(79,123,255,0.9)); animation:flowmove 3.2s linear infinite; }
+  .fp2{ animation-delay:.5s; } .fp3{ animation-delay:1s; } .fp4{ animation-delay:1.5s; }
+  @keyframes flowmove{ from{ stroke-dashoffset:0;} to{ stroke-dashoffset:-460;} }
+
+  /* ============ AUDIO ============ */
+  .audio-section{ padding:130px 0; }
+  .audio-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:18px; }
+  .audio-card{ background:#fff; border:1px solid var(--border); border-radius:var(--radius-md); padding:26px; transition:box-shadow .3s, transform .3s, border-color .3s; }
+  .audio-card:hover{ box-shadow:var(--shadow-md); transform:translateY(-3px); border-color:var(--blue-light); }
+  .audio-card-top{ display:flex; align-items:center; gap:12px; margin-bottom:18px; }
+  .audio-play{ width:40px; height:40px; border-radius:50%; background:var(--navy-900); display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:background .25s, transform .25s; }
+  .audio-card:hover .audio-play{ background:var(--blue); transform:scale(1.06); }
+  .audio-play svg{ width:14px; height:14px; fill:#fff; }
+  .audio-title{ font-weight:600; font-size:15px; }
+  .audio-sub{ font-size:12px; color:var(--slate-500); }
+  .waveform{ display:flex; align-items:center; gap:2.5px; height:36px; }
+  .waveform span{ width:3px; background:var(--blue-light); border-radius:2px; transition:background .3s; }
+  .audio-card:hover .waveform span{ background:var(--blue); }
+
+  /* ============ ONBOARDING ============ */
+  .onboard-section{ padding:130px 0; background:var(--bg-soft); }
+  .onboard-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:20px; position:relative; }
+  .onboard-card{ background:#fff; border:1px solid var(--border); border-radius:var(--radius-lg); padding:34px 28px; position:relative; }
+  .onboard-num{ font-family:'Instrument Sans',sans-serif; font-size:14px; font-weight:650; color:var(--blue); background:var(--blue-lightest); width:34px; height:34px; border-radius:10px; display:flex; align-items:center; justify-content:center; margin-bottom:22px; }
+  .onboard-card h4{ font-size:18px; margin-bottom:8px; }
+  .onboard-card p{ font-size:13.5px; color:var(--slate-500); line-height:1.55; }
+
+  /* ============ PRICING ============ */
+  .pricing-section{ padding:130px 0; }
+  .pricing-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:20px; align-items:stretch; }
+  .price-card{ background:#fff; border:1.5px solid var(--border); border-radius:var(--radius-lg); padding:34px 30px; display:flex; flex-direction:column; transition:transform .3s, box-shadow .3s; }
+  .price-card:hover{ transform:translateY(-4px); box-shadow:var(--shadow-md); }
+  .price-card.featured{ border-color:var(--blue); box-shadow:var(--shadow-blue); position:relative; }
+  .price-badge{ position:absolute; top:-13px; left:30px; background:var(--blue); color:#fff; font-size:11px; font-weight:600; padding:5px 12px; border-radius:100px; letter-spacing:.03em; }
+  .price-tier{ font-family:'Instrument Sans',sans-serif; font-weight:650; font-size:19px; margin-bottom:10px; }
+  .price-amount{ font-family:'Instrument Sans',sans-serif; font-size:34px; font-weight:650; margin-bottom:4px; }
+  .price-amount span{ font-size:15px; font-weight:500; color:var(--slate-500); }
+  .price-fit{ font-size:13px; color:var(--slate-500); margin-bottom:22px; padding-bottom:22px; border-bottom:1px solid var(--border-soft); }
+  .price-feats{ list-style:none; display:flex; flex-direction:column; gap:12px; margin-bottom:28px; flex:1; }
+  .price-feats li{ display:flex; align-items:flex-start; gap:10px; font-size:13.5px; color:var(--slate-600); }
+  .price-feats svg{ width:16px; height:16px; stroke:var(--blue); flex-shrink:0; margin-top:1px; }
+
+  /* ============ CLOSING CTA ============ */
+  .cta-section{ padding:150px 0 130px; background:var(--navy-900); position:relative; overflow:hidden; text-align:center; }
+  .cta-glow{ position:absolute; inset:0; background:radial-gradient(560px 400px at 50% 30%, rgba(47,95,246,0.35), transparent 70%); }
+  .cta-content{ position:relative; z-index:2; max-width:760px; margin:0 auto; }
+  .cta-content h2{ color:#fff; font-size:clamp(30px,4.4vw,50px); margin:22px 0 20px; }
+  .cta-content p{ color:#93a1c2; font-size:17px; margin-bottom:38px; }
+  .cta-btns{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-bottom:70px; }
+  .cta-orbit{ position:relative; height:200px; max-width:560px; margin:0 auto; }
+  .cta-core{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:64px; height:64px; border-radius:50%; background:linear-gradient(135deg,var(--blue),var(--blue-dark)); display:flex; align-items:center; justify-content:center; box-shadow:0 0 0 10px rgba(47,95,246,0.12), 0 0 60px rgba(47,95,246,0.5); z-index:3; }
+  .cta-core svg{ width:26px; height:26px; stroke:#fff; }
+  .cta-ring{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); border:1px solid rgba(255,255,255,0.1); border-radius:50%; }
+  .cta-node{ position:absolute; width:9px; height:9px; border-radius:50%; background:#4f7bff; box-shadow:0 0 10px 2px rgba(79,123,255,0.7); }
+
+  /* ============ FOOTER ============ */
+  footer{ background:var(--navy-900); border-top:1px solid rgba(255,255,255,0.08); padding:36px 0; }
+  .footer-row{ display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; }
+  .footer-row .logo{ color:#fff; }
+  .footer-row p{ color:#5f6c8c; font-size:13px; }
+
+  @media(max-width:640px){
+    .hero{ padding:100px 0 70px; }
+    .numbers-section,.problem-section,.features-section,.flow-section,.audio-section,.onboard-section,.pricing-section{ padding:80px 0; }
+    .cta-section{ padding:100px 0 90px; }
+  }
+</style>
+</head>
+<body>
+
+<header id="siteHeader">
+  <nav>
+    <div class="logo">
+      <span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.05 5A5 5 0 0119 8.95M15.05 1A9 9 0 0123 8.94m-1 7.98v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 1h3a2 2 0 012 1.72c.127.96.362 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l2.28-1.27a2 2 0 012.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></span>
+      NativeTalk <span class="logo-tag">Business Hotline</span>
+    </div>
+    <div class="navlinks">
+      <a href="#numbers">Numbers</a>
+      <a href="#features">Features</a>
+      <a href="#audio">Audio</a>
+      <a href="#pricing">Pricing</a>
+    </div>
+    <div class="nav-cta">
+      <a href="#pricing" class="btn btn-ghost btn-sm">See pricing</a>
+      <a href="#numbers" class="btn btn-primary btn-sm">Get Your Hotline</a>
+    </div>
+  </nav>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <span class="eyebrow reveal in"><span class="dot"></span>Built for teams, not call centres</span>
+      <h1 class="reveal in reveal-d1">Your Business Deserves a <span class="accent">Professional Hotline.</span></h1>
+      <p class="hero-sub reveal in reveal-d2">Choose your own business number, route every customer call to the right team, and give your business the professional image it deserves.</p>
+      <div class="hero-ctas reveal in reveal-d3">
+        <a href="#numbers" class="btn btn-primary">Get Your Business Hotline</a>
+        <a href="#numbers" class="btn btn-ghost">Choose Your Number</a>
+      </div>
+      <div class="hero-proof reveal in reveal-d4">
+        <span class="stack"><span></span><span></span><span></span><span></span></span>
+        Trusted by growing teams across Lagos, Abuja &amp; Port Harcourt
+      </div>
+    </div>
+
+    <div class="hero-visual reveal in reveal-d2">
+      <div class="hv-dashboard">
+        <div class="hv-dash-top">
+          <span class="hv-dash-title">Call Routing</span>
+          <span class="hv-dots"><span></span><span></span><span></span></span>
+        </div>
+        <div class="hv-dash-body">
+          <div class="hv-number-pill">
+            <span class="num">0200 411 1111</span>
+            <span class="live"><i></i>Live</span>
+          </div>
+          <div class="hv-route-row">
+            <div class="hv-route-card"><div class="lbl">Sales</div><div class="val">2 online</div></div>
+            <div class="hv-route-card"><div class="lbl">Support</div><div class="val">3 online</div></div>
+            <div class="hv-route-card"><div class="lbl">Billing</div><div class="val">1 online</div></div>
+          </div>
+          <div class="hv-call-line">
+            <span class="avatar"></span>
+            <div class="meta"><div class="n1">Incoming — Reception</div><div class="n2">Ringing team, 00:04</div></div>
+            <span class="tag">IVR</span>
+          </div>
+          <div class="hv-call-line">
+            <span class="avatar"></span>
+            <div class="meta"><div class="n1">Business hours</div><div class="n2">Mon–Sat, 8am–7pm</div></div>
+            <span class="tag">Active</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hv-phone">
+        <div class="hv-phone-screen">
+          <div class="hv-phone-caller">
+            <div class="hv-phone-avatar"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.362 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></div>
+            <div class="hv-phone-name">ABC Stores</div>
+            <div class="hv-phone-sub">Incoming call · 0200 411 1111</div>
+          </div>
+          <div class="hv-phone-ivr"><div class="t">Press 1</div><div class="s">Sales</div></div>
+          <div class="hv-phone-ivr"><div class="t">Press 2</div><div class="s">Customer Support</div></div>
+          <div class="hv-phone-btns">
+            <span class="hv-phone-btn decline"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
+            <span class="hv-phone-btn accept"><svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.362 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hv-float f1"><div class="t">Caller greeting</div><div class="s">"Welcome to ABC Stores..."</div></div>
+      <div class="hv-float f2"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span> On-hold audio active</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ NUMBER SELECTION ============ -->
+<section class="numbers-section" id="numbers">
+  <div class="wrap">
+    <div class="section-head center reveal">
+      <span class="eyebrow"><span class="dot"></span>The biggest differentiator</span>
+      <h2>Choose a Business Number Your Customers Will Remember.</h2>
+      <p>Reserve your preferred business number before completing your purchase — the way you'd choose a domain, not the way you'd receive a SIM.</p>
+    </div>
+
+    <div class="num-grid" id="numGrid">
+      <div class="num-card" data-name="0200 411 1111">
+        <div class="num-card-top"><span class="num-prefix">0200</span><span class="num-status available">Available</span></div>
+        <div class="num-value">0200 411 1111</div>
+        <button class="num-select-btn"><span class="lbltext">Reserve Number</span><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+      </div>
+      <div class="num-card" data-name="0200 555 1234">
+        <div class="num-card-top"><span class="num-prefix">0200</span><span class="num-status available">Available</span></div>
+        <div class="num-value">0200 555 1234</div>
+        <button class="num-select-btn"><span class="lbltext">Reserve Number</span><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+      </div>
+      <div class="num-card reserved" data-name="0200 700 2020">
+        <div class="num-card-top"><span class="num-prefix">0200</span><span class="num-status reserved-tag">Reserved</span></div>
+        <div class="num-value">0200 700 2020</div>
+        <button class="num-select-btn"><span class="lbltext">Unavailable</span></button>
+      </div>
+      <div class="num-card" data-name="0200 321 4567">
+        <div class="num-card-top"><span class="num-prefix">0200</span><span class="num-status available">Available</span></div>
+        <div class="num-value">0200 321 4567</div>
+        <button class="num-select-btn"><span class="lbltext">Reserve Number</span><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+      </div>
+      <div class="num-card" data-name="0200 888 8888">
+        <div class="num-card-top"><span class="num-prefix">0200</span><span class="num-status available">Available</span></div>
+        <div class="num-value">0200 888 8888</div>
+        <button class="num-select-btn"><span class="lbltext">Reserve Number</span><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+      </div>
+    </div>
+
+    <div class="also-avail">
+      <div class="also-avail-head">
+        <h3>Also available — 0700 business hotlines</h3>
+        <span>Toll-friendly numbers customers already recognise</span>
+      </div>
+      <div class="num-row-grid">
+        <div class="num-row-card"><span class="num-value mono">0700 123 4567</span><button class="btn btn-ghost btn-sm">Reserve</button></div>
+        <div class="num-row-card"><span class="num-value mono">0700 555 0000</span><button class="btn btn-ghost btn-sm">Reserve</button></div>
+        <div class="num-row-card"><span class="num-value mono">0700 800 2020</span><button class="btn btn-ghost btn-sm">Reserve</button></div>
+        <div class="num-row-card"><span class="num-value mono">0700 909 7777</span><button class="btn btn-ghost btn-sm">Reserve</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROBLEM ============ -->
+<section class="problem-section">
+  <div class="wrap problem-grid">
+    <div class="problem-illustration reveal">
+      <div class="pi-row">
+        <div class="pi-card missed">
+          <span class="pi-avatar"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.9.34 1.85.58 2.81.7A2 2 0 0122 16.92z"/></svg></span>
+          <div class="pi-meta"><div class="n1">Customer calls</div><div class="n2">Missed — line busy</div></div>
+        </div>
+        <div class="pi-arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+        <div class="pi-card missed">
+          <span class="pi-avatar"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>
+          <div class="pi-meta"><div class="n1">Staff phone</div><div class="n2">Personal line, offline</div></div>
+        </div>
+      </div>
+      <div class="pi-row">
+        <div class="pi-card missed">
+          <span class="pi-avatar"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>
+          <div class="pi-meta"><div class="n1">Scattered numbers</div><div class="n2">Five lines, no record</div></div>
+        </div>
+      </div>
+      <div class="pi-divider"><div class="line"></div><span>After Business Hotline</span><div class="line"></div></div>
+      <div class="pi-solved">
+        <span class="pi-avatar"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.9.34 1.85.58 2.81.7A2 2 0 0122 16.92z"/></svg></span>
+        <div class="pi-meta"><div class="n1">One hotline, routed correctly</div><div class="n2">Answered by the right person, every time</div></div>
+      </div>
+    </div>
+
+    <div class="problem-copy reveal">
+      <span class="eyebrow"><span class="dot"></span>The cost of going without</span>
+      <h2>Your Personal Number Is Costing Your Business Customers.</h2>
+      <p style="color:var(--slate-600); font-size:16.5px; line-height:1.65; margin-top:16px;">A customer who can't reach you doesn't wait — they call the next business on the list. Personal numbers work for one person. They break the moment your team grows, a call needs routing, or the one person holding the line is unavailable.</p>
+      <div class="stat-row">
+        <div class="stat-item"><div class="num">1</div><div class="lbl">number to remember your entire business by</div></div>
+        <div class="stat-item"><div class="num">0</div><div class="lbl">personal numbers exposed to customers</div></div>
+        <div class="stat-item"><div class="num">24/7</div><div class="lbl">structured handling, even after hours</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEATURES ============ -->
+<section class="features-section" id="features">
+  <div class="wrap">
+    <div class="section-head center reveal">
+      <span class="eyebrow"><span class="dot"></span>Everything included</span>
+      <h2>One Hotline. A Complete Call System.</h2>
+      <p>Every feature a growing team needs to run calls like an enterprise — without an enterprise phone system.</p>
+    </div>
+    <div class="feature-grid" id="featureGrid"></div>
+  </div>
+</section>
+
+<!-- ============ CALL FLOW ============ -->
+<section class="flow-section">
+  <div class="wrap">
+    <div class="section-head center reveal">
+      <span class="eyebrow"><span class="dot"></span>How a call moves</span>
+      <h2>One Number In. The Right Team, Every Time.</h2>
+      <p>Watch a single customer call enter your hotline, move through your IVR menu, and land exactly where it should.</p>
+    </div>
+
+    <div class="flow-diagram reveal">
+      <svg class="flow-svg" viewBox="0 0 900 320" xmlns="http://www.w3.org/2000/svg">
+        <!-- lines -->
+        <path class="flow-line" d="M110 160 C 200 160, 220 160, 300 160" />
+        <path class="flow-line" d="M420 160 C 480 90, 540 60, 660 60" />
+        <path class="flow-line" d="M420 160 C 480 125, 540 115, 660 130" />
+        <path class="flow-line" d="M420 160 C 480 195, 540 205, 660 200" />
+        <path class="flow-line" d="M420 160 C 480 250, 540 265, 660 270" />
+        <!-- pulses -->
+        <path class="flow-pulse" d="M110 160 C 200 160, 220 160, 300 160" />
+        <path class="flow-pulse fp2" d="M420 160 C 480 90, 540 60, 660 60" />
+        <path class="flow-pulse fp3" d="M420 160 C 480 125, 540 115, 660 130" />
+        <path class="flow-pulse fp4" d="M420 160 C 480 205, 540 215, 660 200" />
+
+        <!-- customer node -->
+        <circle class="flow-node" cx="70" cy="160" r="34"/>
+        <text class="flow-node-label" x="70" y="164" text-anchor="middle">Call</text>
+        <text class="flow-node-sub" x="70" y="210" text-anchor="middle">Customer dials</text>
+        <text class="flow-node-sub mono" x="70" y="224" text-anchor="middle" style="fill:#4f7bff; font-weight:600;">0200 411 1111</text>
+
+        <!-- IVR node -->
+        <rect class="flow-node" x="342" y="126" width="80" height="68" rx="14"/>
+        <text class="flow-node-label" x="382" y="156" text-anchor="middle">IVR</text>
+        <text class="flow-node-sub" x="382" y="172" text-anchor="middle">Press 1–4</text>
+
+        <!-- department nodes -->
+        <rect class="flow-node" x="660" y="34" width="150" height="52" rx="12"/>
+        <text class="flow-node-label" x="735" y="56" text-anchor="middle">Sales</text>
+        <text class="flow-node-sub" x="735" y="72" text-anchor="middle">2 team members</text>
+
+        <rect class="flow-node" x="660" y="104" width="150" height="52" rx="12"/>
+        <text class="flow-node-label" x="735" y="126" text-anchor="middle">Support</text>
+        <text class="flow-node-sub" x="735" y="142" text-anchor="middle">3 team members</text>
+
+        <rect class="flow-node" x="660" y="174" width="150" height="52" rx="12"/>
+        <text class="flow-node-label" x="735" y="196" text-anchor="middle">Billing</text>
+        <text class="flow-node-sub" x="735" y="212" text-anchor="middle">1 team member</text>
+
+        <rect class="flow-node" x="660" y="244" width="150" height="52" rx="12"/>
+        <text class="flow-node-label" x="735" y="266" text-anchor="middle">Reception</text>
+        <text class="flow-node-sub" x="735" y="282" text-anchor="middle">Overflow route</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ============ AUDIO ============ -->
+<section class="audio-section" id="audio">
+  <div class="wrap">
+    <div class="section-head center reveal">
+      <span class="eyebrow"><span class="dot"></span>The sound of your business</span>
+      <h2>Every Word Your Customers Hear, Produced Right.</h2>
+      <p>From the first greeting to the moment they're on hold — every audio touchpoint can sound as polished as the rest of your business.</p>
+    </div>
+    <div class="audio-grid" id="audioGrid"></div>
+  </div>
+</section>
+
+<!-- ============ ONBOARDING ============ -->
+<section class="onboard-section">
+  <div class="wrap">
+    <div class="section-head center reveal">
+      <span class="eyebrow"><span class="dot"></span>Getting started</span>
+      <h2>Live in Three Steps.</h2>
+      <p>No hardware, no technical team, no long procurement process.</p>
+    </div>
+    <div class="onboard-grid">
+      <div class="onboard-card reveal">
+        <div class="onboard-num">1</div>
+        <h4>Choose Your Number</h4>
+        <p>Browse the available pool and reserve a number that fits your brand and is easy for customers to remember.</p>
+      </div>
+      <div class="onboard-card reveal reveal-d1">
+        <div class="onboard-num">2</div>
+        <h4>Complete Purchase</h4>
+        <p>Pick a plan, complete payment, and your number is reserved to your business immediately.</p>
+      </div>
+      <div class="onboard-card reveal reveal-d2">
+        <div class="onboard-num">3</div>
+        <h4>Go Live</h4>
+        <p>Submit your team, routing, and greeting preferences — we configure your hotline and activate it within one business day.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRICING ============ -->
+<section class="pricing-section" id="pricing">
+  <div class="wrap">
+    <div class="section-head center reveal">
+      <span class="eyebrow"><span class="dot"></span>Simple, transparent pricing</span>
+      <h2>A Plan for Every Team Size.</h2>
+      <p>Start solo. Add routing as your team grows. Scale to multiple branches when you're ready.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card reveal">
+        <div class="price-tier">Starter</div>
+        <div class="price-amount">₦5,000 <span>/ month</span></div>
+        <div class="price-fit">Solo founders &amp; teams of 2–3</div>
+        <ul class="price-feats">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>1 hotline number, your choice</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Caller greeting &amp; basic IVR</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Business hours routing</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Voicemail</li>
+        </ul>
+        <a href="#numbers" class="btn btn-ghost" style="width:100%;">Get started</a>
+      </div>
+      <div class="price-card featured reveal reveal-d1">
+        <span class="price-badge">Most popular</span>
+        <div class="price-tier">Team</div>
+        <div class="price-amount">Per member <span>/ month</span></div>
+        <div class="price-fit">Teams of 4–10 needing routing</div>
+        <ul class="price-feats">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Everything in Starter</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Department routing</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Sequential &amp; simultaneous ringing</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Overflow routing &amp; forwarding</li>
+        </ul>
+        <a href="#numbers" class="btn btn-primary" style="width:100%;">Get started</a>
+      </div>
+      <div class="price-card reveal reveal-d2">
+        <div class="price-tier">Multi-Branch</div>
+        <div class="price-amount">Custom</div>
+        <div class="price-fit">Teams of 10–20+, multiple locations</div>
+        <ul class="price-feats">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Everything in Team</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Multiple hotlines &amp; branches</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Priority routing &amp; call queue</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Dedicated configuration support</li>
+        </ul>
+        <a href="#numbers" class="btn btn-ghost" style="width:100%;">Talk to us</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CLOSING CTA ============ -->
+<section class="cta-section">
+  <div class="cta-glow"></div>
+  <div class="wrap cta-content reveal">
+    <span class="eyebrow" style="background:rgba(255,255,255,0.06); border-color:rgba(255,255,255,0.14); color:#a9bbff;"><span class="dot" style="background:#4f7bff; box-shadow:0 0 0 3px rgba(79,123,255,.25);"></span>One platform, every call</span>
+    <h2>One Business. One Hotline.<br/>Unlimited Professional Conversations.</h2>
+    <p>Every call, every branch, every team member — routed through one number your customers will remember.</p>
+    <div class="cta-btns">
+      <a href="#numbers" class="btn btn-on-dark">Get Your Business Hotline</a>
+      <a href="#numbers" class="btn btn-ghost-dark">Choose Your Number</a>
+    </div>
+
+    <div class="cta-orbit">
+      <div class="cta-ring" style="width:200px; height:200px;"></div>
+      <div class="cta-ring" style="width:320px; height:320px;"></div>
+      <div class="cta-ring" style="width:440px; height:440px;"></div>
+      <div class="cta-core"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.9.34 1.85.58 2.81.7A2 2 0 0122 16.92z"/></svg></div>
+      <div class="cta-node" id="ctaNodes"></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap footer-row">
+    <div class="logo">
+      <span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 1h3a2 2 0 012 1.72c.127.96.362 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l2.28-1.27a2 2 0 012.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></span>
+      NativeTalk Business Hotline
+    </div>
+    <p>© 2026 NativeTalk. A Business Hotline built for teams that mean business.</p>
+  </div>
+</footer>
+
+<script>
+  // sticky header shadow
+  const header = document.getElementById('siteHeader');
+  window.addEventListener('scroll', () => {
+    header.classList.toggle('scrolled', window.scrollY > 8);
+  });
+
+  // scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => io.observe(el));
+
+  // number card selection
+  document.querySelectorAll('.num-card:not(.reserved)').forEach(card => {
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.num-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+    });
+  });
+
+  // feature grid data
+  const features = [
+    ['route','Department Routing','Guide callers to Sales, Support, Billing, Deliveries or Reception with simple keypad options.'],
+    ['hash','Choose Your Own Number','Reserve a business number from an available pool — memorable, on-brand, and yours.'],
+    ['phone','Dedicated Business Hotline','One professional number your whole team answers, instead of personal lines.'],
+    ['forward','Sequential Ringing','Call your team one after another until someone picks up.'],
+    ['ring','Simultaneous Ringing','Ring every available team member at once — whoever answers first takes the call.'],
+    ['shuffle','Overflow Routing','Unavailable staff automatically hand off to the next available person.'],
+    ['clock','Business Hours Routing','Handle calls differently during and after working hours, automatically.'],
+    ['voicemail','Voicemail','Never lose a missed call — capture it as a message instead.'],
+    ['mic','Professional Greetings','A polished welcome message that opens every call the same way.'],
+    ['menu','IVR Menus','Let callers navigate your business without needing an operator.'],
+    ['music','Hold Music','Replace silence with music, promotions, or brand messaging.'],
+    ['upload','Custom Audio Uploads','Upload your own recordings, or request professional production.'],
+    ['layers','Multiple Hotline Numbers','Dedicated lines for sales, support, delivery, or VIP customers.'],
+    ['map','Multi-Branch Support','Separate hotlines for every location, each routed independently.'],
+  ];
+
+  const icons = {
+    route: '<path d="M6 3v12a3 3 0 003 3h9M6 3a3 3 0 100 6 3 3 0 000-6zm12 12a3 3 0 100 6 3 3 0 000-6z"/>',
+    hash: '<line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/>',
+    phone: '<path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.9.34 1.85.58 2.81.7A2 2 0 0122 16.92z"/>',
+    forward: '<polyline points="15 17 20 12 15 7"/><path d="M4 18v-2a4 4 0 014-4h12"/>',
+    ring: '<path d="M18.63 13A17.89 17.89 0 0118 8"/><path d="M6.26 6.26A5.86 5.86 0 006 8c0 7-3 9-3 9h14"/><path d="M18 8a6 6 0 00-9.33-5"/><path d="M8.65 3.55L2 10.2"/><path d="M13.73 21a2 2 0 01-3.46 0"/><line x1="1" y1="1" x2="23" y2="23"/>',
+    shuffle: '<polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/>',
+    clock: '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+    voicemail: '<circle cx="5.5" cy="11.5" r="4.5"/><circle cx="18.5" cy="11.5" r="4.5"/><line x1="5.5" y1="16" x2="18.5" y2="16"/>',
+    mic: '<path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/>',
+    menu: '<line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="14" y2="18"/>',
+    music: '<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',
+    upload: '<path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>',
+    layers: '<polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>',
+    map: '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>',
+  };
+
+  const featureGrid = document.getElementById('featureGrid');
+  features.forEach(([icon, title, desc], i) => {
+    const card = document.createElement('div');
+    card.className = 'feature-card reveal' + (i % 4 === 1 ? ' reveal-d1' : i % 4 === 2 ? ' reveal-d2' : i % 4 === 3 ? ' reveal-d3' : '');
+    card.innerHTML = `<div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${icons[icon]}</svg></div><h4>${title}</h4><p>${desc}</p>`;
+    featureGrid.appendChild(card);
+    io.observe(card);
+  });
+
+  // audio grid data
+  const audioItems = [
+    ['Caller Greetings','8–15 sec · opens every call'],
+    ['IVR Menus','5–10 sec per menu level'],
+    ['Hold Music','15–30 sec · looped or rotated'],
+    ['Campaign Announcements','On-demand, per promotion'],
+    ['Professional Voice Recording','Studio-recorded, add-on'],
+  ];
+  const audioGrid = document.getElementById('audioGrid');
+  audioItems.forEach(([title, sub], i) => {
+    const card = document.createElement('div');
+    card.className = 'audio-card reveal' + (i % 3 === 1 ? ' reveal-d1' : i % 3 === 2 ? ' reveal-d2' : '');
+    let bars = '';
+    for (let b = 0; b < 34; b++) {
+      const h = 6 + Math.round(Math.abs(Math.sin(b * 0.6 + i)) * 24);
+      bars += `<span style="height:${h}px;"></span>`;
+    }
+    card.innerHTML = `<div class="audio-card-top"><span class="audio-play"><svg viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3"/></svg></span><div><div class="audio-title">${title}</div><div class="audio-sub">${sub}</div></div></div><div class="waveform">${bars}</div>`;
+    audioGrid.appendChild(card);
+    io.observe(card);
+  });
+
+  // cta orbit nodes
+  const ctaOrbit = document.querySelector('.cta-orbit');
+  const radii = [100, 160, 220];
+  for (let i = 0; i < 10; i++) {
+    const node = document.createElement('div');
+    node.className = 'cta-node';
+    const r = radii[i % radii.length];
+    const angle = (i / 10) * Math.PI * 2;
+    const x = 280 + r * Math.cos(angle);
+    const y = 100 + r * 0.42 * Math.sin(angle);
+    node.style.left = x + 'px';
+    node.style.top = y + 'px';
+    node.style.opacity = (0.4 + Math.random() * 0.6).toFixed(2);
+    node.style.animation = `pulse ${2 + Math.random() * 2}s infinite`;
+    node.style.animationDelay = (Math.random() * 2) + 's';
+    ctaOrbit.appendChild(node);
+  }
+</script>
+
+</body>
+</html>
